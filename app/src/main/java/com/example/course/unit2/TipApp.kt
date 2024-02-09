@@ -1,4 +1,4 @@
-package com.example.course.course2
+package com.example.course.unit2
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

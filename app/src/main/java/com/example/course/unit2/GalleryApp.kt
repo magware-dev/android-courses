@@ -1,4 +1,4 @@
-package com.example.course.course2
+package com.example.course.unit2
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

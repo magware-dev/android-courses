@@ -21,51 +21,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.course.course2.DiceApp
-import com.example.course.course2.GalleryApp
-import com.example.course.course2.LemonadeApp
-import com.example.course.course2.TipApp
-import com.example.course.ui.theme.CourseTheme
+import com.example.course.ui.theme.AppTheme
+import com.example.course.unit2.DiceApp
+import com.example.course.unit2.GalleryApp
+import com.example.course.unit2.LemonadeApp
+import com.example.course.unit2.TipApp
+import com.example.course.unit3.CourseGrid
 
 class Main : ComponentActivity() {
 
-    enum class Route {
-        Home,
-        Course1First,
-        Course1Second,
-        Course1BusinessCard,
-        Course1Grid,
-        Course1TasksCompleted,
-        Course2DiceApp,
-        Course2LemonadeApp,
-        Course2TipApp,
-        Course2GalleryApp,
-    }
-
-    private data class App(
-        val title: String,
-        val composable: @Composable () -> Unit
-    )
-
-    companion object {
-        private val APPS = mapOf(
-            Route.Course1First to App("Course 1 / first") { First("Android") },
-            Route.Course1Second to App("Course 1 / second") { Second() },
-            Route.Course1BusinessCard to App("Course 1 / business-card") { BusinessCard() },
-            Route.Course1Grid to App("Course 1 / grid") { Grid() },
-            Route.Course1TasksCompleted to App("Course 1 / tasks-completed") { TasksCompleted() },
-
-            Route.Course2LemonadeApp to App("Course 2 / Lemonade") { LemonadeApp().Lemonade() },
-            Route.Course2DiceApp to App("Course 2 / Dice") { DiceApp().DiceWithButtonAndImage() },
-            Route.Course2TipApp to App("Course 2 / Tip") { TipApp().Tip() },
-            Route.Course2GalleryApp to App("Course 2 / Gallery") { GalleryApp().Gallery() },
-        )
+    enum class App(val title: String, val Composable: @Composable () -> Unit) {
+        Unit1First("Course 1 / first", { First("Android") }),
+        Unit1Second("Course 1 / second", { Second() }),
+        Unit1BusinessCard("Course 1 / business-card", { BusinessCard() }),
+        Unit1Grid("Course 1 / grid", { Grid() }),
+        Unit1TasksCompleted("Course 1 / tasks-completed", { TasksCompleted() }),
+        Unit2LemonadeApp("Course 2 / Lemonade", { LemonadeApp().Lemonade() }),
+        Unit2DiceApp("Course 2 / Dice", { DiceApp().DiceWithButtonAndImage() }),
+        Unit2TipApp("Course 2 / Tip", { TipApp().Tip() }),
+        Unit2GalleryApp("Course 2 / Gallery", { GalleryApp().Gallery() }),
+        Unit3Grid("Course 3 / Grid", { CourseGrid().Screen() }),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CourseTheme {
+            AppTheme {
                 View()
             }
         }
@@ -74,15 +55,15 @@ class Main : ComponentActivity() {
     @Preview(showBackground = true)
     @Composable
     fun ViewPreview() {
-        CourseTheme {
+        AppTheme {
             View()
         }
     }
 
     @Composable
     private fun View() {
-        var currentApp: Route by remember { mutableStateOf(Route.Home) }
-        if (currentApp == Route.Home) {
+        var currentApp: App? by remember { mutableStateOf(null) }
+        if (currentApp == null) {
             Home { currentApp = it }
         } else {
             Column(
@@ -91,13 +72,13 @@ class Main : ComponentActivity() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 Button(
-                    onClick = { currentApp = Route.Home },
+                    onClick = { currentApp = null },
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Text("return to app selector")
                 }
                 Surface(Modifier.fillMaxSize()) {
-                    APPS[currentApp]!!.composable()
+                    currentApp!!.Composable()
                 }
 
             }
@@ -105,16 +86,16 @@ class Main : ComponentActivity() {
     }
 
     @Composable
-    private fun Home(navigate: (Route) -> Unit) {
+    private fun Home(navigate: (App) -> Unit) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn {
-                items(APPS.entries.toList()) {
-                    Button(onClick = { navigate(it.key) }) {
-                        Text(text = it.value.title)
+                items(App.entries.toList()) {
+                    Button(onClick = { navigate(it) }) {
+                        Text(text = it.title)
                     }
                 }
             }
