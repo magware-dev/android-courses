@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,10 +56,9 @@ class GalleryApp {
                         .fillMaxWidth()
                         .fillMaxHeight(fraction = 0.9f)
                 ) {
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        shadowElevation = 16.dp,
-                        modifier = Modifier.padding((4 * 4).dp)
+                    Card(
+                        elevation = CardDefaults.cardElevation(16.dp),
+                        modifier = Modifier.padding((4 * 4).dp),
                     ) {
                         BoxWithConstraints {
                             Image(
