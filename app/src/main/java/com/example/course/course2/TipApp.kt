@@ -189,7 +189,7 @@ class TipApp {
                     .focusRequester(focusRequester)
             )
             if (requestFocus) {
-                LaunchedEffect(Unit) { focusRequester.requestFocus()}
+                LaunchedEffect(Unit) { focusRequester.requestFocus() }
             }
             Text(
                 text = "%",

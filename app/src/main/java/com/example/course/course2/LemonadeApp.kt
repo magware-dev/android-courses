@@ -1,5 +1,6 @@
 package com.example.course.course2
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,29 +30,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.course.R
-import com.example.course.course2.LemonadeApp.LemonadeState.Phase
 
 class LemonadeApp {
+    enum class Phase(val text: String, @DrawableRes val image: Int) {
+        TREE("Tap the lemon tree to select a lemon", R.drawable.lemon_tree),
+        SQUEEZE("Keep tapping the lemon to squeeze it", R.drawable.lemon_squeeze),
+        DRINK("Tap the lemonade to drink it", R.drawable.lemon_drink),
+        RESTART("Tap the empty glass to start again", R.drawable.lemon_restart);
 
-    private data class LemonadeState(val phase: Phase) {
-        enum class Phase { TREE, SQUEEZE, DRINK, RESTART }
-
-        fun text() = data[phase]!!.first
-        fun image() = data[phase]!!.second
-        fun next() = LemonadeState(Phase.entries[(phase.ordinal+1)%4])
-
-        companion object {
-            private val data: Map<Phase, Pair<String, Int>> = mapOf(
-                Phase.TREE to Pair("Tap the lemon tree to select a lemon", R.drawable.lemon_tree),
-                Phase.SQUEEZE to Pair("Keep tapping the lemon to squeeze it",
-                    R.drawable.lemon_squeeze
-                ),
-                Phase.DRINK to Pair("Tap the lemonade to drink it", R.drawable.lemon_drink),
-                Phase.RESTART to Pair("Tap the empty glass to start again",
-                    R.drawable.lemon_restart
-                ),
-            )
-        }
+        fun next() = Phase.entries[(this.ordinal+1)%4]
     }
 
     @Preview(showBackground = true)
@@ -59,6 +46,9 @@ class LemonadeApp {
     fun Preview() {
         Lemonade(Modifier.fillMaxSize())
     }
+
+    private val rnd: Int
+        get() = (2..4).random()
 
     @Composable
     fun Lemonade(modifier: Modifier = Modifier) {
@@ -74,20 +64,20 @@ class LemonadeApp {
                     .padding(vertical = (4 * 4).dp)
             )
 
-            val rnd : () -> Int = { (2..4).random() }
-            var state: LemonadeState by remember { mutableStateOf(LemonadeState(Phase.TREE)) }
-            var squeezeClicks: Int by remember { mutableIntStateOf(rnd()) }
+            var phase: Phase by remember { mutableStateOf(Phase.TREE) }
+            var squeezeClicks: Int by remember { mutableIntStateOf(rnd) }
             TabArea(
-                state = state,
-                onClick = { state = when(state.phase) {
-                    Phase.SQUEEZE -> if (squeezeClicks == 1) {
-                        squeezeClicks = rnd()
-                        state.next()
-                    } else {
-                        squeezeClicks--
-                        state
+                phase = phase,
+                onClick = { phase = when {
+                    phase == Phase.SQUEEZE && (squeezeClicks == 1) -> {
+                        squeezeClicks = rnd
+                        phase.next()
                     }
-                    else -> state.next()
+                    phase == Phase.SQUEEZE -> {
+                        squeezeClicks--
+                        phase
+                    }
+                    else -> phase.next()
                 } },
                 modifier = Modifier
                     .fillMaxSize()
@@ -97,7 +87,7 @@ class LemonadeApp {
 
     @Composable
     private fun TabArea(
-        state: LemonadeState,
+        phase: Phase,
         onClick: () -> Unit,
         modifier: Modifier = Modifier
     ) {
@@ -112,13 +102,13 @@ class LemonadeApp {
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB1E6E6))
             ) {
                 Image(
-                    painter = painterResource(state.image()),
+                    painter = painterResource(phase.image),
                     contentDescription = null,
                     modifier = Modifier.padding(20.dp)
                 )
             }
             Spacer(Modifier.height(16.dp))
-            Text(text = state.text(), fontSize = 18.sp)
+            Text(text = phase.text, fontSize = 18.sp)
         }
     }
 
