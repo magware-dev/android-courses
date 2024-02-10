@@ -34,6 +34,7 @@ import com.example.course.unit2.GalleryApp
 import com.example.course.unit2.LemonadeApp
 import com.example.course.unit2.TipApp
 import com.example.course.unit3.CourseGrid
+import com.example.course.unit3.WoofApp
 
 class Main : ComponentActivity() {
 
@@ -48,6 +49,7 @@ class Main : ComponentActivity() {
         Unit2TipApp("Course 2 / Tip", { TipApp().Tip() }),
         Unit2GalleryApp("Course 2 / Gallery", { GalleryApp().Gallery() }),
         Unit3Grid("Course 3 / Grid", { CourseGrid().Screen() }),
+        Unit3WoofApp("Course 3 / WoofApp", { WoofApp().Screen() }),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
